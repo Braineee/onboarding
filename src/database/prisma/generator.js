@@ -2,7 +2,7 @@ const fs = require('fs');
 const glob = require('glob');
 const path = require('path');
 
-const schemas = glob.sync(path.join(__dirname, './schemas/*.prisma'));
+const schemas = glob.sync('./src/modules/**/entities/*.prisma');
 
 let schema = `datasource db {
     provider = "postgres"
