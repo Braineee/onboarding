@@ -29,7 +29,7 @@ export class Broker {
 
       //Remove initial args from results
       for (const key in initialArguments) {
-        if (!Object.keys(results).includes(key)) {
+        if (!Object.keys(results).includes(key) || key === 'password') {
           delete results[key];
         }
       }

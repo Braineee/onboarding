@@ -3,19 +3,29 @@ import { UseCase } from '@shared/usecase/base-usecase';
 import { UserService } from '../services/user.service';
 import { CreateUserUsecaseDto } from '../dto/create-user.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { HashingUtil } from '@shared/utils/hashing/hashing.utils';
 
 @Injectable()
 export class CreateUserUsecase extends UseCase<User> {
-  constructor(private readonly userService: UserService) {
+  constructor(
+    private readonly userService: UserService,
+    private readonly hashingUtil: HashingUtil,
+  ) {
     super();
   }
 
   async execute(createUserUsecaseDto: CreateUserUsecaseDto): Promise<User> {
     await this.checkIfUserAlreadyExists(createUserUsecaseDto);
-    return this.userService.create(createUserUsecaseDto);
+    const user = await this.userService.create({
+      ...createUserUsecaseDto,
+      password: await this.hashingUtil.hash(createUserUsecaseDto.password),
+    });
+
+    delete user.password;
+    return user;
   }
 
-  async checkIfUserAlreadyExists(
+  private async checkIfUserAlreadyExists(
     createUserUsecaseDto: CreateUserUsecaseDto,
   ): Promise<void> {
     const user = await this.userService.findOne({
@@ -24,7 +34,7 @@ export class CreateUserUsecase extends UseCase<User> {
     });
 
     if (user) {
-      throw new BadRequestException('User already exists');
+      throw new BadRequestException('user already exists');
     }
   }
 }

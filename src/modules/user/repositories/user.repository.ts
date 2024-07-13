@@ -22,12 +22,16 @@ export class UserRepository extends BaseRepository<User> {
     id: string,
     data: Partial<Omit<User, 'id' | 'email'>>,
   ): Promise<User> {
-    return await this.userRepository.update({
+    const user = await this.userRepository.update({
       where: {
         id,
       },
       data,
     });
+
+    delete user.password;
+
+    return user;
   }
 
   async findOne(param: string | Record<string, any>): Promise<User> {
@@ -38,7 +42,11 @@ export class UserRepository extends BaseRepository<User> {
         OR: [{ id: param }, { email: param }, { phoneNumber: param }],
       };
     } else {
-      where = param;
+      let searchParam = [];
+      for (let key in param) {
+        searchParam.push({ [key]: param[key] });
+      }
+      where = { OR: searchParam };
     }
 
     return await this.userRepository.findFirst({ where });
