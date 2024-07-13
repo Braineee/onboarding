@@ -1,26 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { User } from '@module/user/entities/user.entity';
+import { UserRepository } from '@module/user/repositories/user.repository';
+import { CreateUserServiceDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private readonly userRepository: UserRepository) {}
+
+  async create(createUserServiceDto: CreateUserServiceDto): Promise<User> {
+    return this.userRepository.create(createUserServiceDto);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findOne(param: string | Record<string, any>): Promise<User> {
+    return this.userRepository.findOne(param);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async findOneOrFail(param: string): Promise<User> {
+    const user = await this.userRepository.findOne(param);
+    if (!user) throw new NotFoundException('User not found');
+    return user;
   }
 }

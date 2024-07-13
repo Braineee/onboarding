@@ -1,6 +1,6 @@
 datasource db {
     provider = "postgres"
-    url      = env("DATABASE_URL")
+    url      = env("POSTGRES_DATABASE_URL")
     shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
@@ -10,21 +10,22 @@ generator client {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String     @unique
+  id          String     @id @default(uuid())
+  name        String
+  email       String     @unique
   phoneNumber String     @unique
-  password  String
-  roleId    String
-  deletedAt DateTime?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  password    String
+  roleId      String?
+  deletedAt   DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
-  role      Role       @relation(fields: [roleId], references: [id])
+  role        Role?       @relation(fields: [roleId], references: [id])
 }
 model Role {
   id        String     @id @default(uuid())
   name      String
+  alias     String
   deletedAt DateTime?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt

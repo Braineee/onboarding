@@ -16,6 +16,12 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@module/*": ["src/modules/*"],
+      "@shared/*": ["src/shared/*"],
+      "@config/*": ["src/configs/*"],
+      "@broker/*": ["src/broker/*"]
+    }
   }
 }

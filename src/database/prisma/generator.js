@@ -6,7 +6,7 @@ const schemas = glob.sync('./src/modules/**/entities/*.prisma');
 
 let schema = `datasource db {
     provider = "postgres"
-    url      = env("DATABASE_URL")
+    url      = env("POSTGRES_DATABASE_URL")
     shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
