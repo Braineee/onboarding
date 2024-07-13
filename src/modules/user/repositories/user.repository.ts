@@ -13,7 +13,7 @@ export class UserRepository extends BaseRepository<User> {
   }
 
   async create(data: any): Promise<User> {
-    return await this.userRepository.create({
+    return this.userRepository.create({
       data,
     });
   }
@@ -34,20 +34,17 @@ export class UserRepository extends BaseRepository<User> {
     return user;
   }
 
-  async findOne(param: string | Record<string, any>): Promise<User> {
+  async findOne(
+    param: Partial<User>,
+    searchType: 'OR' | 'AND' = 'OR',
+  ): Promise<User> {
     let where: Record<string, any> = {};
+    let searchParam = [];
 
-    if (typeof param === 'string') {
-      where = {
-        OR: [{ id: param }, { email: param }, { phoneNumber: param }],
-      };
-    } else {
-      let searchParam = [];
-      for (let key in param) {
-        searchParam.push({ [key]: param[key] });
-      }
-      where = { OR: searchParam };
+    for (let key in param) {
+      searchParam.push({ [key]: param[key] });
     }
+    where[searchType] = searchParam;
 
     return await this.userRepository.findFirst({ where });
   }
