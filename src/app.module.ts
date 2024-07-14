@@ -12,6 +12,7 @@ import {
 } from 'nestjs-i18n';
 import { join } from 'path';
 import { Broker } from '@broker/broker';
+import { AuthModule } from '@module/auth/auth.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { Broker } from '@broker/broker';
     }),
     UserModule,
     RoleModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [Broker],

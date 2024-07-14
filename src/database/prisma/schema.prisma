@@ -16,11 +16,13 @@ model User {
   phoneNumber String     @unique
   password    String
   roleId      String?
+  lastLoginAt DateTime?
   deletedAt   DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
   role        Role?       @relation(fields: [roleId], references: [id])
+  Sessions    Session[]
 }
 model Role {
   id        String     @id @default(uuid())
@@ -31,4 +33,14 @@ model Role {
   updatedAt DateTime   @updatedAt
 
   users     User[]
+}
+model Session {
+  id        String  @id @default(uuid())
+  userId    String 
+  token     String  @unique
+  isRevoked Boolean @default(false)
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
 }
